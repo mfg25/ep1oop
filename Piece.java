@@ -13,9 +13,9 @@ public class Piece {
      * @param isMaster Se o tipo da peça é mestre ou não
      */
     public Piece(Color color, boolean isMaster) {
-        this.color = color;
-        this.isMaster = isMaster;
+    	this.isMaster = isMaster;
         this.isAlive = true;
+        this.color = color;
     }
 
     /**

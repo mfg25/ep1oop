@@ -50,13 +50,13 @@ public class Spot {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (i == 0) {
-                    if (j == size/2) {
+                    if (j == 2) {
                         board[i][j] = new Spot(new Piece(Color.BLUE, true), new Position(i, j), Color.BLUE);
                     } else {
                         board[i][j] = new Spot(new Piece(Color.BLUE, false), new Position(i, j), Color.BLUE);
                     }
-                } else if (i == size-1) {
-                    if (j == size/2) {
+                } else if (i == 4) {
+                    if (j == 2) {
                         board[i][j] = new Spot(new Piece(Color.RED, true), new Position(i, j), Color.RED);
                     } else {
                         board[i][j] = new Spot(new Piece(Color.RED, false), new Position(i, j), Color.RED);
@@ -127,15 +127,15 @@ public class Spot {
      */
     protected void occupySpot(Piece piece) throws IllegalMovementException {
         if(this.piece != null && this.piece.getColor() == piece.getColor()) {
-            throw new IllegalMovementException("This spot is already occupied by a piece of the same color");
+            throw new IllegalMovementException("Essa posição está ocupada por uma peça da mesma cor.");
         }
 
-        System.out.println("Piece of color " + piece.getColor() + " moved to [" + this.position.getCol() + ", " + this.position.getRow() + "]");
+        System.out.println("Peça da cor " + piece.getColor() + " movida para [" + this.position.getCol() + ", " + this.position.getRow() + "].");
         if(this.piece != null) {
-            System.out.println("Piece of color " + this.piece.getColor() + " dies from cringe");
+            System.out.println("Peça da cor " + this.piece.getColor() + " foi eliminada.");
             this.piece.kill();
         }
-
+        
         this.piece = piece;
     }
 
@@ -143,7 +143,7 @@ public class Spot {
      * Método que "libera" o espaço atual, ou seja, deixa-o vazio
      */
     protected void releaseSpot() {
+    	this.color = Color.NONE;
         this.piece = null;
-        this.color = Color.NONE;
     }
 }

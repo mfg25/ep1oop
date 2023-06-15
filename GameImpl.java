@@ -1,60 +1,64 @@
 package ep1coo;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Scanner;
+
+import chess.ChessPiece;
+import chess.Color;
+
 
 /**
  * Classe que contém métodos que serão chamados para a execução do jogo
  */
 public class GameImpl implements Game{
-    protected final int BOARD_SIZE = 5;
-    protected Player winner = null;
-    private Player turn;
+    private final int BOARD_SIZE = 5;
+    private Color turn;
     private Spot[][] board;
     private Player redPlayer;
     private Player bluePlayer;
-    private Piece redMasterPiece;
-    private Piece blueMasterPiece;
+    private Piece blueMaster;
+    private Piece redMaster;
     private Card tableCard;
     private Card[] deck;
+    
+    public static final String ANSI_RESET = "\u001B[0m";
+	public static final String ANSI_RED = "\u001B[31m";
+	public static final String ANSI_CYAN = "\u001B[36m";
 
-    /**
-     * Construtor que inicia o jogo com as informações básicas
-     */
+
     public GameImpl(){
         this.board = Spot.createBoard(this.BOARD_SIZE);
         this.deck = Card.createCards();
 
-        redMasterPiece = board[0][2].getPiece();
-        System.out.println(redMasterPiece);
-        blueMasterPiece = board[4][2].getPiece();
-        System.out.println(blueMasterPiece);
-
-        this.redPlayer = new Player("Red", Color.RED, this.deck[0], this.deck[1]);
+        blueMaster = board[4][2].getPiece();
+        redMaster = board[0][2].getPiece();
+        
         this.bluePlayer = new Player("Blue", Color.BLUE, this.deck[2], this.deck[3]);
-
+        this.redPlayer = new Player("Red", Color.RED, this.deck[0], this.deck[1]);
+        
         this.tableCard = this.deck[4];
-        this.turn = this.tableCard.getColor() == Color.RED ? this.redPlayer : this.bluePlayer;
+        this.turn = this.tableCard.getColor() == Color.RED ? Color.RED : Color.BLUE;
     }
 
-    public GameImpl(String redName, String blueName){
+    public GameImpl(String redPlayerName, String bluePlayerName){
         this.board = Spot.createBoard(this.BOARD_SIZE);
         this.deck = Card.createCards();
 
-        redMasterPiece = board[0][2].getPiece();
-        blueMasterPiece = board[4][2].getPiece();
-
-        this.redPlayer = new Player(redName, Color.RED, this.deck[0], this.deck[1]);
-        this.bluePlayer = new Player(blueName, Color.BLUE, this.deck[2], this.deck[3]);
+        blueMaster = board[4][2].getPiece();
+        redMaster = board[0][2].getPiece();
+       
+        this.bluePlayer = new Player(bluePlayerName, Color.BLUE, this.deck[0], this.deck[1]);
+        this.redPlayer = new Player(redPlayerName, Color.RED, this.deck[2], this.deck[3]);
 
         this.tableCard = this.deck[4];
-        this.turn = this.tableCard.getColor() == Color.RED ? this.redPlayer : this.bluePlayer;
+        this.turn = this.tableCard.getColor() == Color.RED ? Color.RED : Color.BLUE;
     }
 
-    public GameImpl(String redName, String blueName, Card[] cards){
+    public GameImpl(String redNamePlayer, String blueNamePlayer, Card[] cards){
         this.board = Spot.createBoard(this.BOARD_SIZE);
-
-        redMasterPiece = board[0][2].getPiece();
-        
-        blueMasterPiece = board[4][2].getPiece();
+        redMaster = board[0][2].getPiece();
+        blueMaster = board[4][2].getPiece();
 
         ArrayList<Card> cardsList = new ArrayList<Card>(Arrays.asList(cards));
 
@@ -66,21 +70,15 @@ public class GameImpl implements Game{
 
         this.deck = cardsList.subList(0, 5).toArray(new Card[5]);
 
-        this.redPlayer = new Player(redName, Color.RED, this.deck[0], this.deck[1]);
-        this.bluePlayer = new Player(blueName, Color.BLUE, this.deck[2], this.deck[3]);
+        this.redPlayer = new Player(redNamePlayer, Color.RED, this.deck[0], this.deck[1]);
+        this.bluePlayer = new Player(blueNamePlayer, Color.BLUE, this.deck[2], this.deck[3]);
 
         this.tableCard = this.deck[4];
 
-        this.turn = this.tableCard.getColor() == Color.RED ? this.redPlayer : this.bluePlayer;
+        this.turn = this.tableCard.getColor() == Color.RED ? Color.RED : Color.BLUE;
     }
     
-    public void runGame() {
-    	printBoard();
-    	while(!checkVictory(Color.RED) && !checkVictory(Color.BLUE)) {
-    		
-    	}
-    }
-
+    
     /**
      * Método que devolve a cor da posição do tabuleiro. Se possui uma cor, significa que é um templo. Caso contrário, é um espaço normal
      * @param position Posição do tabuleiro
@@ -88,7 +86,7 @@ public class GameImpl implements Game{
      */
     public Color getSpotColor(Position position){
         return this.board[position.getRow()][position.getCol()].getColor();
-    };
+    }
 
     /**
      * Método que devolve a peça que está na posição do tabuleiro
@@ -99,21 +97,13 @@ public class GameImpl implements Game{
         return this.board[position.getRow()][position.getCol()].getPiece();
     }
 
-    /**
-     * Método que devolve a carta que está na mesa, que será substituída após a próxima jogada
-     * @return Um objeto Card que representa a carta na mesa
-     */
     public Card getTableCard(){
         return this.tableCard;
     }
-
-    /**
-     * Método que devolve as informações sobre o jogador com as peças vermelhas
-     * @return Um objeto Player que representa o jogador vermelho
-     */
-    public Player getRedPlayer(){
-        return this.redPlayer;
-    };
+    
+    public void setTableCard(Card card) {
+    	this.tableCard = card;
+    }
 
     /**
      * Método que devolve as informações sobre o jogador com as peças azuis
@@ -121,9 +111,24 @@ public class GameImpl implements Game{
      */
     public Player getBluePlayer(){
         return this.bluePlayer;
-    };
-
+    }
+    
+    
     /**
+     * Método que devolve as informações sobre o jogador com as peças vermelhas
+     * @return Um objeto Player que representa o jogador vermelho
+     */
+    public Player getRedPlayer(){
+        return this.redPlayer;
+    }
+    
+    public Color getTurn() {
+    	return this.turn;
+    }
+    
+  
+	
+	/**
      * Método que confere se um jogador de uma determinada cor venceu o jogo. Critérios de vitória:
      * — Derrotou a peça de mestre adversária
      * — Posicionou o seu mestre na posição da base adversária
@@ -131,106 +136,119 @@ public class GameImpl implements Game{
      * @return Um booleano true para caso esteja em condições de vencer e false caso contrário
      */
     public boolean checkVictory(Color color){
-        Spot templeToCheck = color == Color.RED ? board[0][2] : board[4][2];
+    	System.out.println("---------");
+        Spot checkTemple = color == Color.RED ? board[0][2] : board[4][2];
 
-        Piece masterToCheck = color == Color.RED ? blueMasterPiece : redMasterPiece;
+        Piece checkMaster = color == Color.RED ? blueMaster : redMaster;
 
-        if(masterToCheck.isDead())
-            return true;
+        System.out.println("Checando se " + color + " venceu.");
+        if(checkMaster.isDead()) {
+        	System.out.println(checkMaster.getColor() + " master morreu.");
+        	return true;
+        }
 
-        if(templeToCheck.getPiece() != null 
-            && templeToCheck.getPiece().getColor() == color 
-            && templeToCheck.getPiece().isMaster()
-        ) return true;
-
+        if(checkTemple.getPiece() != null && getSpotColor(checkTemple.getPosition()) == color && checkTemple.getPiece().isMaster()) {
+        	return true;
+        }
+        System.out.println("---------");
         return false;
     };
+    
+    public Player getCurrentPlayer() {
+    	return getTurn() == Color.RED ? getRedPlayer() : getBluePlayer();
+    }
 
-
+    public Color oppositeColor(Color currentColor) {
+    	return currentColor == Color.RED ?  Color.BLUE : Color.RED;
+    }
+    
     /**
      * Método que move uma peça
      * @param card A carta de movimento que será usada
-     * @param currentPos A posição de origem da peça
      * @param cardMove A posição da carta para onde a peça irá se mover
+     * @param currentPos A posição da peça que irá se mover
      * @exception IncorrectTurnOrderException Caso não seja a vez de um jogador fazer um movimento
      * @exception IllegalMovementException Caso uma peça seja movida para fora do tabuleiro ou para uma posição onde já tem uma peça da mesma cor
      * @exception InvalidCardException Caso uma carta que não está na mão do jogador seja usada
      * @exception InvalidPieceException Caso uma peça que não está no tabuleiro seja usada
      */
     public void makeMove(Card card, Position cardMove, Position currentPos) throws IncorrectTurnOrderException, IllegalMovementException, InvalidCardException, InvalidPieceException{
-        int curRow = currentPos.getRow();
-        int curCol = currentPos.getCol();
+    	
+    	Player currentPlayer = turn == Color.RED ? this.redPlayer : this.bluePlayer;
+  
+        Spot currentSpot = board[currentPos.getRow()][currentPos.getCol()];
 
-        Spot curSpot = board[curRow][curCol];
+        int endRow = currentPos.getRow() + cardMove.getRow();
+        int endCol = currentPos.getCol() + cardMove.getCol();
+        
+        if(currentSpot.getPiece().getColor() != turn) {
+        	throw new IncorrectTurnOrderException("Seleção inválida, vez do jogador: " + turn);
+        }
 
-        int cardRow = cardMove.getRow();
-        int cardCol = cardMove.getCol();
+        if(currentSpot.getPiece() == null) {
+        	throw new InvalidPieceException("A peça não está no tabuleiro.");
+        }
 
-        int endRow = curRow + cardRow;
-        int endCol = curCol + cardCol;
+        if(!card.hasMove(cardMove)) {
+        	throw new IllegalMovementException("Movimento não permitido pela carta.");
+        }
 
-        // Verifica se é a vez do jogador
-        if(curSpot.getColor() != turn.getPieceColor())
-            throw new IncorrectTurnOrderException("Não é a sua vez.");
-
-        // Verifica se existe uma peça na posição atual
-        if(curSpot.getPiece() == null)
-            throw new InvalidPieceException("A peça não está no tabuleiro.");
-
-
-        if(!card.hasMove(cardMove))
-            throw new IllegalMovementException("Movimento não permitido pela carta.");
-
-        // Verifica se a carta usada está na mão do jogador
-        boolean cardInHand = false;
-
-        for (Card c : turn.getCards()) {
+        boolean playerHasCard = false;
+        for (Card c : currentPlayer.getCards()) {
             if (c.getName().equals(card.getName())) {
-                cardInHand = true;
+            	playerHasCard = true;
                 break;
             }
         }
 
-        if(!cardInHand) 
-            throw new InvalidCardException("A carta não está na mão do jogador.");
+        if(!playerHasCard) {
+        	throw new InvalidCardException("A carta selecionada não está com o jogador.");
+        }
 
-        // Realiza o movimento da peça
-        
-        if (endRow < 0 || endRow  >= BOARD_SIZE || endCol < 0 || endCol >= BOARD_SIZE)
-            throw new IllegalMovementException("Movimento ilegal, posição final fora do tabuleiro");
+        if (endRow < 0 || endRow  >= BOARD_SIZE || endCol < 0 || endCol >= BOARD_SIZE) {
+        	throw new IllegalMovementException("Movimento inválido, ultrapassou os limites do tabuleiro.");
+        }
 
         Spot endSpot = board[endRow][endCol];
 
-        endSpot.movePiece(curSpot.getPiece());
+        endSpot.movePiece(currentSpot.getPiece());
         
-        curSpot.removePiece();
-
+        currentSpot.removePiece();
+        
+        
+        //troca carta com a da mesa
+        getCurrentPlayer().swapCard(card, getTableCard());
+        setTableCard(card);
+        
+        this.turn = oppositeColor(turn);
+        
         return;
     };
 
-    /**
-     * Método que imprime o tabuleiro no seu estado atual
-     * OBS: Esse método é opcional não será utilizado na correção, mas serve para acompanhar os resultados parciais do jogo
-     */
     public void printBoard(){
+    	System.out.println("   0   1   2   3   4 ");
         for(int i = 0; i < BOARD_SIZE; i++){
+        	System.out.print(i + " ");
             for(int j = 0; j < BOARD_SIZE; j++){
                 Spot spot = board[i][j];
                 if(spot.getPiece() == null){
                     System.out.print("[  ]");
                 }
                 else if(spot.getPiece().isMaster() == false){
-                    if(spot.getPiece().getColor() == Color.BLUE) System.out.print("[BS]");
-                    else System.out.print("[RS]");
+                    if(spot.getPiece().getColor() == Color.BLUE) System.out.print(ANSI_CYAN + "[BS]" + ANSI_RESET);
+                    else System.out.print(ANSI_RED + "[RS]" + ANSI_RESET);
                 }
                 else if(spot.getPiece().isMaster() == true){
-                    if(spot.getPiece().getColor() == Color.BLUE) System.out.print("[BM]");
-                    else System.out.print("[RM]");
+                    if(spot.getPiece().getColor() == Color.BLUE) System.out.print(ANSI_CYAN + "[BM]" + ANSI_RESET);
+                    else System.out.print(ANSI_RED + "[RM]" + ANSI_RESET);
                 }
-                
             }
             System.out.println("");
         }
+        
         return;
-    };
+    }
+    
+  
+	
 }

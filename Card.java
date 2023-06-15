@@ -81,17 +81,21 @@ public class Card {
         List<Card> allDeck = new ArrayList<Card>();
 
         allDeck.add(new Card("Tiger", Color.BLUE, new Position[]{new Position(1, 0), new Position(-2, 0)}));
-        allDeck.add(new Card("Crab", Color.BLUE, new Position[]{new Position(0, -2), new Position(-1, 0), new Position(0, 2)}));
-        allDeck.add(new Card("Goose", Color.BLUE, new Position[]{new Position(-1, -1), new Position(0, -1), new Position(0, 1), new Position(1, 1)}));
-        allDeck.add(new Card("Rabbit", Color.BLUE, new Position[]{new Position(1, -1), new Position(-1, 1), new Position(0, 2)}));
-        allDeck.add(new Card("Elephant", Color.RED, new Position[]{new Position(-1, -1), new Position(0, -1), new Position(-1, 1), new Position(0, 1)}));
-        allDeck.add(new Card("Frog", Color.RED, new Position[]{new Position(-1, -1), new Position(0, -2), new Position(1, 1)}));
-        allDeck.add(new Card("Rooster", Color.RED, new Position[]{new Position(0, -1), new Position(0, 1), new Position(1, -1), new Position(-1, 1)}));
         allDeck.add(new Card("Dragon", Color.RED, new Position[]{new Position(1, -1), new Position(1, 1), new Position(-1, -2), new Position(-1, 2)}));
-
+        allDeck.add(new Card("Frog", Color.RED, new Position[]{new Position(-1, -1), new Position(0, -2), new Position(1, 1)}));
+        allDeck.add(new Card("Rabbit", Color.BLUE, new Position[]{new Position(1, -1), new Position(-1, 1), new Position(0, 2)}));
+        allDeck.add(new Card("Crab", Color.BLUE, new Position[]{new Position(0, -2), new Position(-1, 0), new Position(0, 2)}));
+        allDeck.add(new Card("Elephant", Color.RED, new Position[]{new Position(-1, -1), new Position(0, -1), new Position(-1, 1), new Position(0, 1)}));
+        allDeck.add(new Card("Goose", Color.BLUE, new Position[]{new Position(-1, -1), new Position(0, -1), new Position(0, 1), new Position(1, 1)}));
+        allDeck.add(new Card("Rooster", Color.RED, new Position[]{new Position(0, -1), new Position(0, 1), new Position(1, -1), new Position(-1, 1)}));
+        
 		Collections.shuffle(allDeck);
 
-		Card[] playDeck = allDeck.subList(0, 5).toArray(new Card[5]);
+		Card[] playDeck = new Card[5];
+		
+		for(int i = 0; i < 5; i++) {
+			playDeck[i] = allDeck.get(i);
+		}
 		
         return playDeck;
     }
