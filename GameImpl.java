@@ -31,8 +31,8 @@ public class GameImpl implements Game{
         this.board = Spot.createBoard(this.BOARD_SIZE);
         this.deck = Card.createCards();
 
-        blueMaster = board[4][2].getPiece();
-        redMaster = board[0][2].getPiece();
+        blueMaster = board[0][2].getPiece();
+        redMaster = board[4][2].getPiece();
         
         this.bluePlayer = new Player("Blue", Color.BLUE, this.deck[2], this.deck[3]);
         this.redPlayer = new Player("Red", Color.RED, this.deck[0], this.deck[1]);
@@ -45,8 +45,8 @@ public class GameImpl implements Game{
         this.board = Spot.createBoard(this.BOARD_SIZE);
         this.deck = Card.createCards();
 
-        blueMaster = board[4][2].getPiece();
-        redMaster = board[0][2].getPiece();
+        blueMaster = board[0][2].getPiece();
+        redMaster = board[4][2].getPiece();
        
         this.bluePlayer = new Player(bluePlayerName, Color.BLUE, this.deck[0], this.deck[1]);
         this.redPlayer = new Player(redPlayerName, Color.RED, this.deck[2], this.deck[3]);
@@ -57,15 +57,10 @@ public class GameImpl implements Game{
 
     public GameImpl(String redNamePlayer, String blueNamePlayer, Card[] cards){
         this.board = Spot.createBoard(this.BOARD_SIZE);
-        redMaster = board[0][2].getPiece();
-        blueMaster = board[4][2].getPiece();
+        redMaster = board[4][2].getPiece();
+        blueMaster = board[0][2].getPiece();
 
         ArrayList<Card> cardsList = new ArrayList<Card>(Arrays.asList(cards));
-
-        if (cardsList.contains(null)) {
-            throw new IllegalArgumentException("Cards cannot be null");
-        }
-
         Collections.shuffle(cardsList);
 
         this.deck = cardsList.subList(0, 5).toArray(new Card[5]);
@@ -87,6 +82,10 @@ public class GameImpl implements Game{
     public Color getSpotColor(Position position){
         return this.board[position.getRow()][position.getCol()].getColor();
     }
+    
+    public Spot[][] getBoard(){
+    	return this.board;
+    }
 
     /**
      * Método que devolve a peça que está na posição do tabuleiro
@@ -104,6 +103,10 @@ public class GameImpl implements Game{
     public void setTableCard(Card card) {
     	this.tableCard = card;
     }
+    
+    public Card[] getDeck() {
+    	return this.deck;
+    }
 
     /**
      * Método que devolve as informações sobre o jogador com as peças azuis
@@ -111,6 +114,14 @@ public class GameImpl implements Game{
      */
     public Player getBluePlayer(){
         return this.bluePlayer;
+    }
+    
+    public Piece getBlueMaster() {
+    	return this.blueMaster;
+    }
+    
+    public Piece getRedMaster() {
+    	return this.redMaster;
     }
     
     
@@ -136,23 +147,19 @@ public class GameImpl implements Game{
      * @return Um booleano true para caso esteja em condições de vencer e false caso contrário
      */
     public boolean checkVictory(Color color){
-    	System.out.println("---------");
         Spot checkTemple = color == Color.RED ? board[0][2] : board[4][2];
-
         Piece checkMaster = color == Color.RED ? blueMaster : redMaster;
 
-        System.out.println("Checando se " + color + " venceu.");
         if(checkMaster.isDead()) {
-        	System.out.println(checkMaster.getColor() + " master morreu.");
         	return true;
         }
 
         if(checkTemple.getPiece() != null && getSpotColor(checkTemple.getPosition()) == color && checkTemple.getPiece().isMaster()) {
         	return true;
         }
-        System.out.println("---------");
+        
         return false;
-    };
+    }
     
     public Player getCurrentPlayer() {
     	return getTurn() == Color.RED ? getRedPlayer() : getBluePlayer();
@@ -178,8 +185,8 @@ public class GameImpl implements Game{
   
         Spot currentSpot = board[currentPos.getRow()][currentPos.getCol()];
 
-        int endRow = currentPos.getRow() + cardMove.getRow();
-        int endCol = currentPos.getCol() + cardMove.getCol();
+        int finalRow = currentPos.getRow() + cardMove.getRow();
+        int finalCol = currentPos.getCol() + cardMove.getCol();
         
         if(currentSpot.getPiece().getColor() != turn) {
         	throw new IncorrectTurnOrderException("Seleção inválida, vez do jogador: " + turn);
@@ -205,11 +212,11 @@ public class GameImpl implements Game{
         	throw new InvalidCardException("A carta selecionada não está com o jogador.");
         }
 
-        if (endRow < 0 || endRow  >= BOARD_SIZE || endCol < 0 || endCol >= BOARD_SIZE) {
+        if (finalRow < 0 || finalRow  >= BOARD_SIZE || finalCol < 0 || finalCol >= BOARD_SIZE) {
         	throw new IllegalMovementException("Movimento inválido, ultrapassou os limites do tabuleiro.");
         }
 
-        Spot endSpot = board[endRow][endCol];
+        Spot endSpot = board[finalRow][finalCol];
 
         endSpot.movePiece(currentSpot.getPiece());
         

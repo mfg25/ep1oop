@@ -90,6 +90,7 @@ public class Player {
      * @return void - não retorna nada
      */
     public void printHand() {
-        
+        System.out.print("[" + this.getCards()[0].getName() + ", ");
+        System.out.println(this.getCards()[1].getName() + "]");
     }
 }
